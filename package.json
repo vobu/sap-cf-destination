@@ -1,7 +1,7 @@
 {
   "name": "sap-cf-destination",
   "version": "0.0.1",
-  "description": "convenienct utility for calling a URL via a SAP CF destination",
+  "description": "convenience utility for calling a URL via a SAP CF destination",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,7 +16,7 @@
     "proxy"
   ],
   "author": "Volker Buzek <volker.buzek@js-soft.com>",
-  "license": "ISC",
+  "license": "Apache 2.0",
   "dependencies": {
     "cfenv": "^1.1.0",
     "oauth": "^0.9.15",
