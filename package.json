@@ -1,0 +1,26 @@
+{
+  "name": "sap-cf-destination",
+  "version": "0.0.1",
+  "description": "convenienct utility for calling a URL via a SAP CF destination",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "SAP",
+    "CF",
+    "cloud",
+    "foundry",
+    "destinations",
+    "connectivity",
+    "proxy"
+  ],
+  "author": "Volker Buzek <volker.buzek@js-soft.com>",
+  "license": "ISC",
+  "dependencies": {
+    "cfenv": "^1.1.0",
+    "oauth": "^0.9.15",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2"
+  }
+}
