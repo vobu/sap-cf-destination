@@ -1,6 +1,7 @@
 const OAuth2 = require("oauth").OAuth2;
 const cfenv = require("cfenv");
 const rp = require("request-promise");
+const http_verbs = require('./lib/http-verbs');
 
 module.exports = workOn;
 
@@ -25,6 +26,7 @@ async function getAccessTokenForDestinationInstance(clientId, clientSecret, base
     });
 
 }
+
 /**
  *
  * @param {string} clientId
@@ -77,9 +79,11 @@ async function getDestination(destinationName, destinationApiUrl, accessToken) {
  * @param {string} proxy - CF's integrated proxy as FQDN, e.g. http://10.0.1.23:20003
  * @param {string} proxyAccessToken - OAuth2.0 Bearer token ("client_credentials" grant type)
  * @param {string} [contentType]
+ * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD')} http_method
+ * @param {object} [payload] - payload for POST, PUT or PATCH
  * @returns {Promise<T | never>}
  */
-function callViaDestination(url, destination, proxy, proxyAccessToken, contentType = 'application/json') {
+function callViaDestination(url, destination, proxy, proxyAccessToken, contentType = 'application/json', http_method, payload) {
     // standard header
     const headers = {
         'Proxy-Authorization': `Bearer ${proxyAccessToken}`,
@@ -113,9 +117,15 @@ function callViaDestination(url, destination, proxy, proxyAccessToken, contentTy
  * @param {string} options.uaa_instance - name of the instance of the uaa service
  * @param {string} options.destination_instance - name of the instance of the destination service
  * @param {string} options.destination_name - name of the destination to use
+ * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD')} options.http_verb - HTTP method to use
+ * @param {object} [options.payload] - payload for POST, PUT or PATCH
+ * @param {string} [options.content_type] - value for "Content-Type" http header, e.g. "application/json"
  * @returns {Promise<any | never>}
  */
 async function workOn(options) {
+    if (!http_verbs.hasOwnProperty(options.http_verb)) {
+        throw Error(`unknown http method; allowed values: ${JSON.stringify(http_verbs)}`);
+    }
     const connectivityInstance = cfenv.getAppEnv().getService(options.connectivity_instance);
     const connectivityClientId = connectivityInstance.credentials.clientid;
     const connectivityClientSecret = connectivityInstance.credentials.clientsecret;
@@ -135,12 +145,12 @@ async function workOn(options) {
         .then(accessTokenForDestination => {
             return getDestination(options.destination_name, destinationApi, accessTokenForDestination);
         })
-        .then( destination => {
+        .then(destination => {
             queriedDestination = JSON.parse(destination);
             return getAccessTokenForProxy(connectivityClientId, connectivityClientSecret, xsuaaUrl)
         })
         .then(accessTokenForProxy => {
-            return callViaDestination(options.url, queriedDestination, proxy, accessTokenForProxy);
+            return callViaDestination(options.url, queriedDestination, proxy, accessTokenForProxy, options.content_type || undefined, options.http_verb, options.payload || {});
         })
         .then(data => {
             return data;
