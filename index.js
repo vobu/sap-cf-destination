@@ -173,18 +173,6 @@ function callViaDestination(parameters) {
                 json: true
             });
             break;
-        case http_verbs.POST_FORM:
-            Object.assign(options, {
-                method: http_verbs.POST,
-                form: {
-                    formdata
-                },
-                headers: Object.assign(headers, {
-                    'Content-type': contentType
-                }),
-                body: payload
-            });
-            break;
         case http_verbs.DELETE:
             Object.assign(options, {
                 method: http_verbs.DELETE,
@@ -217,9 +205,6 @@ async function workOn(options) {
     // safeguards
     if (!http_verbs.hasOwnProperty(options.http_verb)) {
         throw Error(`unknown http method: ${options.http_verb}; allowed values: ${JSON.stringify(http_verbs)}`);
-    }
-    if (options.form_data && options.http_verb !== http_verbs.POST_FORM) {
-        throw Error(`please specify ${http_verbs.POST_FORM} for submitting form-like data!`)
     }
 
     // build up necessary variables

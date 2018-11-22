@@ -41,6 +41,10 @@ callDestination({
         })
 ~~~
 
+## Hints & Limitations
+- all major HTTP verbs are supported (`GET`, `POST`, `PUT`,`PATCH`,`HEAD`, `DELETE`)
+- `POST`, `PUT` and `PATCH` only support a JSON payload.
+  The payload itself can be a plain, deeply nested object; it will be stringified automatically
 
 
 ## License
