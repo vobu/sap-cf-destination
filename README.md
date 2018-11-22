@@ -22,7 +22,7 @@ npm install --save sap-cf-destination
   ~~~  
 
 ## Usage
-~~~
+~~~ javascript
 const callDestination = require('sap-cf-destination');
 
 callDestination({
