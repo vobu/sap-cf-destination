@@ -39,15 +39,16 @@ describe('using helper functions in non-CF environment', () => {
 
     it('retrieving the config for a destination should return the provided destination (name) appropriately nested', () => {
         let destinationName = "http://ex.org";
-        return getDestination(
-            destinationName,
-            'http://ex.org/api',
-            'someToken'
-        ).should.eventually.deep.equal({
+        let expected = JSON.stringify({
             "destinationConfiguration": {
                 "URL": destinationName
             }
         });
+        return getDestination(
+            destinationName,
+            'http://ex.org/api',
+            'someToken'
+        ).should.eventually.deep.equal(expected);
     });
 
     after(() => {
