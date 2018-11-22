@@ -30,7 +30,11 @@ callDestination({
         connectivity_instance: 'connectivity-lite',
         uaa_instance: 'uaa-lite',
         destination_instance: 'destination-lite',
-        destination_name: 'tbaas'
+        destination_name: 'tbaas',
+        http_verb: 'POST',
+        payload: {
+            "me": "here"
+        }
     })
         .then(response => {
             // do sth clever from the response
