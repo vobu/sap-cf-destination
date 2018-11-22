@@ -5,6 +5,22 @@
 npm install --save sap-cf-destination
 ~~~
 
+## Prerequisites
+- `destination` and `destination` instance created
+- `connectivity` instance created
+- `xsuaa` instance created
+- all of the above instances bound to the node app, e.g. via `manifest.yml`:
+  ~~~ yaml
+  applications:
+  - name: my_app
+    path: my_app
+    memory: 128M
+    services:
+      - xsuaa-instance
+      - connectivity-instance
+      - destination-instance
+  ~~~  
+
 ## Usage
 ~~~
 const callDestination = require('sap-cf-destination');
@@ -14,7 +30,11 @@ callDestination({
         connectivity_instance: 'connectivity-lite',
         uaa_instance: 'uaa-lite',
         destination_instance: 'destination-lite',
-        destination_name: 'tbaas'
+        destination_name: 'tbaas',
+        http_verb: 'POST',
+        payload: {
+            "me": "here"
+        }
     })
         .then(response => {
             // do sth clever from the response
@@ -25,6 +45,11 @@ callDestination({
         })
 ~~~
 
+## Hints & Limitations
+- all major HTTP verbs are supported (`GET`, `POST`, `PUT`,`PATCH`,`HEAD`, `DELETE`,`OPTIONS`) per se  
+  **BUT**: if the proxy software decides to not let any of them pass through, the request originating from this module will of course fail
+- `POST`, `PUT` and `PATCH` only support a JSON payload.
+  The payload itself can be a plain, deeply nested object; it will be stringified automatically
 
 
 ## License
