@@ -1,11 +1,11 @@
 const rewire = require('rewire');
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
-const callDestination = require("../index");
 
 // set up the middleware
 chai.use(chaiAsPromised);
 chai.should();
+const expect = chai.expect;
 
 // rewire for testing internal functions
 const app = rewire('../index.js');
@@ -14,7 +14,7 @@ getAccessTokenForProxy = app.__get__('getAccessTokenForProxy');
 getDestination = app.__get__('getDestination');
 
 
-describe('using module in non-CF environment', () => {
+describe('using helper functions in non-CF environment', () => {
     before(() => {
         // hard-wire "local" mode
         this.VCAP_APPLICATION = process.env.VCAP_APPLICATION;

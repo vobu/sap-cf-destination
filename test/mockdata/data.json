@@ -1,0 +1,9 @@
+{
+  "jobs": [
+    { "id": 1, "title": "some job" }
+  ],
+  "builds": [
+    { "id": 1, "body": "some build comment", "jobsId": 1 }
+  ],
+  "other": { "name": "stuff" }
+}

@@ -15,7 +15,7 @@ module.exports = workOn;
 async function getAccessTokenForDestinationInstance(clientId, clientSecret, baseUrl) {
     if (cfenv.getAppEnv().isLocal) {
         return Promise.resolve("mockLocalAccessToken");
-    } 
+    }
     return new Promise((resolve, reject) => {
         const oAuthClient = new OAuth2(clientId, clientSecret, `${baseUrl}/`, '/oauth/authorize', 'oauth/token', null);
         oAuthClient.getOAuthAccessToken('', {grant_type: 'client_credentials'},
@@ -65,12 +65,12 @@ async function getAccessTokenForProxy(clientId, clientSecret, baseUrl) {
  */
 async function getDestination(destinationName, destinationApiUrl, accessToken) {
     if (cfenv.getAppEnv().isLocal) {
-        return Promise.resolve(
-            {
-                "destinationConfiguration": {
-                    "URL" : destinationName
-                }
-            });
+        let object = {
+            "destinationConfiguration": {
+                "URL": destinationName
+            }
+        };
+        return Promise.resolve(JSON.stringify(object));
     }
     const options = {
         url: `${destinationApiUrl}/${destinationName}`,
@@ -88,7 +88,7 @@ async function getDestination(destinationName, destinationApiUrl, accessToken) {
 /**
  * call a url in a destination via CF's included proxy
  *
- * @param {Map} parameters - various configuration options 
+ * @param {Map} parameters - various configuration options
  * @param {string} parameters.url - the absolute path (e.g. /my/api) to call in the destination
  * @param {object} parameters.destination - CF destination configuration object
  * @param {string} parameters.proxy - CF's integrated proxy as FQDN, e.g. http://10.0.1.23:20003
@@ -101,7 +101,7 @@ async function getDestination(destinationName, destinationApiUrl, accessToken) {
  */
 function callViaDestination(parameters) {
     let {url, destination, proxy, proxyAccessToken, contentType = 'application/json', http_method, payload, formdata} = parameters;
-    
+
     let headers = {};
     let options = {
         url: `${destination.destinationConfiguration.URL}${url}`
@@ -114,11 +114,11 @@ function callViaDestination(parameters) {
             'Proxy-Authorization': `Bearer ${proxyAccessToken}`
         };
         // add proxy
-        Object.assign(options ,{
+        Object.assign(options, {
             proxy: proxy
         });
     }
-    
+
     // if configured in CF cockpit,
     // use auth data
     if (destination.authTokens && destination.authTokens[0]) {
@@ -146,22 +146,31 @@ function callViaDestination(parameters) {
         case http_verbs.POST:
             Object.assign(options, {
                 method: http_verbs.POST,
-                headers: headers,
-                body: payload
+                headers: Object.assign(headers, {
+                    'Content-type': contentType
+                }),
+                body: payload,
+                json: true
             });
             break;
         case http_verbs.PUT:
             Object.assign(options, {
                 method: http_verbs.PUT,
-                headers: headers,
-                body: payload
+                headers: Object.assign(headers, {
+                    'Content-type': contentType
+                }),
+                body: payload,
+                json: true
             });
             break;
         case http_verbs.PATCH:
             Object.assign(options, {
                 method: http_verbs.PATCH,
-                headers: headers,
-                body: payload
+                headers: Object.assign(headers, {
+                    'Content-type': contentType
+                }),
+                body: payload,
+                json: true
             });
             break;
         case http_verbs.POST_FORM:
@@ -170,8 +179,16 @@ function callViaDestination(parameters) {
                 form: {
                     formdata
                 },
-                headers: headers,
+                headers: Object.assign(headers, {
+                    'Content-type': contentType
+                }),
                 body: payload
+            });
+            break;
+        case http_verbs.DELETE:
+            Object.assign(options, {
+                method: http_verbs.DELETE,
+                headers: headers
             });
             break;
     }
