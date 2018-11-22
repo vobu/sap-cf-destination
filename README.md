@@ -5,6 +5,22 @@
 npm install --save sap-cf-destination
 ~~~
 
+## Prerequisites
+- `destination` and `destination` instance created
+- `connectivity` instance created
+- `xsuaa` instance created
+- all of the above instances bound to the node app, e.g. via `manifest.yml`:
+  ~~~ yaml
+  applications:
+  - name: my_app
+    path: my_app
+    memory: 128M
+    services:
+      - xsuaa-instance
+      - connectivity-instance
+      - destination-instance
+  ~~~  
+
 ## Usage
 ~~~
 const callDestination = require('sap-cf-destination');
