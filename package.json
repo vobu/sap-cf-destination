@@ -1,10 +1,10 @@
 {
   "name": "sap-cf-destination",
-  "version": "0.0.2-alpha.1",
+  "version": "0.0.2-alpha.2",
   "description": "convenience utility for calling a URL via a SAP CF destination",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",

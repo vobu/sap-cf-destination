@@ -37,6 +37,42 @@ describe('callDestination in non-CF env', () => {
         });
     });
 
+    it('HEAD on a valid endpoint', () => {
+        let parameters = {
+            url: '/builds/1',
+            connectivity_instance: 'a',
+            uaa_instance: 'b',
+            destination_instance: 'c',
+            destination_name: mockserverUrl,
+            http_verb: 'HEAD'
+        };
+        return callDestination(parameters)
+            .then(data => {
+                expect(data).to.be.an('object');
+            })
+            .catch(err => {
+                expect.fail(err);
+            });
+    });
+
+    it('OPTIONS of a valid endpoint', () => {
+        let parameters = {
+            url: '/builds/1',
+            connectivity_instance: 'a',
+            uaa_instance: 'b',
+            destination_instance: 'c',
+            destination_name: mockserverUrl,
+            http_verb: 'OPTIONS'
+        };
+        return callDestination(parameters)
+            .then(data => {
+                expect(data).to.be.empty;
+            })
+            .catch(err => {
+                expect.fail(err);
+            });
+    });
+    
     it('GET a valid endpoint', () => {
         let parameters = {
             url: '/builds/1',
@@ -137,41 +173,7 @@ describe('callDestination in non-CF env', () => {
             });
     });
 
-    it('HEAD on a valid endpoint', () => {
-        let parameters = {
-            url: '/builds/1',
-            connectivity_instance: 'a',
-            uaa_instance: 'b',
-            destination_instance: 'c',
-            destination_name: mockserverUrl,
-            http_verb: 'HEAD'
-        };
-        return callDestination(parameters)
-            .then(data => {
-                expect(data).to.be.an('object');
-            })
-            .catch(err => {
-                expect.fail(err);
-            });
-    });
     
-    it('OPTIONS of a valid endpoint', () => {
-        let parameters = {
-            url: '/builds/1',
-            connectivity_instance: 'a',
-            uaa_instance: 'b',
-            destination_instance: 'c',
-            destination_name: mockserverUrl,
-            http_verb: 'OPTIONS'
-        };
-        return callDestination(parameters)
-            .then(data => {
-                expect(data).to.be.empty;
-            })
-            .catch(err => {
-                expect.fail(err);
-            });
-    });
     
     
     after(done => {
