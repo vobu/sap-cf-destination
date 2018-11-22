@@ -20,7 +20,7 @@
     "proxy"
   ],
   "author": "Volker Buzek <volker.buzek@js-soft.com>",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "dependencies": {
     "cfenv": "^1.1.0",
     "oauth": "^0.9.15",
