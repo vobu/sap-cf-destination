@@ -96,11 +96,10 @@ async function getDestination(destinationName, destinationApiUrl, accessToken) {
  * @param {string} [parameters.contentType]
  * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD')} parameters.http_method
  * @param {object} [parameters.payload] - payload for POST, PUT or PATCH
- * @param {object} [parameters.formdata] - input-form like data, only relevant in conjunction with POST
  * @returns {Promise<T | never>}
  */
 function callViaDestination(parameters) {
-    let {url, destination, proxy, proxyAccessToken, contentType = 'application/json', http_method, payload, formdata} = parameters;
+    let {url, destination, proxy, proxyAccessToken, contentType = 'application/json', http_method, payload} = parameters;
 
     let headers = {};
     let options = {
@@ -197,7 +196,6 @@ function callViaDestination(parameters) {
  * @param {string} options.destination_name - name of the destination to use
  * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD')} options.http_verb - HTTP method to use
  * @param {object} [options.payload] - payload for POST, PUT or PATCH
- * @param {object} [options.form_data] - input-form like data, only relevant in conjunction with POST
  * @param {string} [options.content_type] - value for "Content-Type" http header, e.g. "application/json"
  * @returns {Promise<any | never>}
  */
@@ -265,8 +263,7 @@ async function workOn(options) {
                     proxyAccessToken: String(accessTokenForProxy),
                     contentType: options.content_type || undefined,
                     http_method: options.http_verb,
-                    payload: options.payload || {},
-                    formdata: options.form_data || undefined
+                    payload: options.payload || undefined
                 });
         })
         .then(data => {

@@ -65,7 +65,7 @@ describe('callDestination in non-CF env', () => {
             destination_name: mockserverUrl,
             http_verb: 'POST',
             payload: {
-                "me" : "here"
+                "me": "here"
             }
         };
         return callDestination(parameters)
@@ -76,28 +76,50 @@ describe('callDestination in non-CF env', () => {
                 expect.fail(err);
             });
     });
-
-    it('POST form data to a valid endpoint', () => {
+    
+    it('PUT to a valid endpoint', () => {
         let parameters = {
-            url: '/builds',
+            url: '/jobs/1',
             connectivity_instance: 'a',
             uaa_instance: 'b',
             destination_instance: 'c',
             destination_name: mockserverUrl,
-            http_verb: 'POST_FORM',
-            form_data: {
-                "form" : "data"
+            http_verb: 'PUT',
+            payload: {
+                "title": "new title"
             }
         };
         return callDestination(parameters)
             .then(validObject => {
-                expect(validObject.me).to.be.equal("here");
+                expect(validObject.id).to.be.equal(1);
             })
             .catch(err => {
                 expect.fail(err);
             });
     });
-
+    
+    it('PATCH to a valid endpoint', () => {
+        let parameters = {
+            url: '/jobs/1',
+            connectivity_instance: 'a',
+            uaa_instance: 'b',
+            destination_instance: 'c',
+            destination_name: mockserverUrl,
+            http_verb: 'PATCH',
+            payload: {
+                "title": "new title"
+            }
+        };
+        return callDestination(parameters)
+            .then(validObject => {
+                expect(validObject.id).to.be.equal(1);
+            })
+            .catch(err => {
+                expect.fail(err);
+            });
+    });
+    
+    
     after(done => {
         // restore actual runtime env (if applicable)
         process.env.VCAP_APPLICATION = this.VCAP_APPLICATION;
