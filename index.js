@@ -81,13 +81,13 @@ async function getDestination(destinationName, destinationApiUrl, accessToken) {
  * @param {string} [contentType]
  * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD')} http_method
  * @param {object} [payload] - payload for POST, PUT or PATCH
+ * @param {object} [formdata] - input-form like data, only relevant in conjunction with POST
  * @returns {Promise<T | never>}
  */
-function callViaDestination(url, destination, proxy, proxyAccessToken, contentType = 'application/json', http_method, payload) {
+function callViaDestination(url, destination, proxy, proxyAccessToken, contentType = 'application/json', http_method, payload, formdata) {
     // standard header
     const headers = {
-        'Proxy-Authorization': `Bearer ${proxyAccessToken}`,
-        'Content-type': contentType
+        'Proxy-Authorization': `Bearer ${proxyAccessToken}`
     };
 
     // if configured in CF cockpit,
@@ -96,12 +96,62 @@ function callViaDestination(url, destination, proxy, proxyAccessToken, contentTy
         headers['Authorization'] = `${destination.authTokens[0].type} ${destination.authTokens[0].value}`;
     }
 
-    const options = {
+    // standard options
+    let options = {
         url: `${destination.destinationConfiguration.URL}${url}`,
-        method: 'GET',
-        headers: headers,
         proxy: proxy
     };
+
+    // enrich query option based on http verb
+    switch (http_method) {
+        case http_verbs.GET:
+            Object.assign(options, {
+                method: http_verbs.GET,
+                headers: Object.assign(headers, {
+                    'Content-type': contentType
+                })
+            });
+            break;
+        case http_verbs.HEAD:
+            Object.assign(options, {
+                method: http_verbs.HEAD,
+                headers: Object.assign(headers, {
+                    'Content-type': contentType
+                })
+            });
+            break;
+        case http_verbs.POST:
+            Object.assign(options, {
+                method: http_verbs.POST,
+                headers: headers,
+                body: payload
+            });
+            break;
+        case http_verbs.PUT:
+            Object.assign(options, {
+                method: http_verbs.PUT,
+                headers: headers,
+                body: payload
+            });
+            break;
+        case http_verbs.PATCH:
+            Object.assign(options, {
+                method: http_verbs.PATCH,
+                headers: headers,
+                body: payload
+            });
+            break;
+        case http_verbs.POST_FORM:
+            Object.assign(options, {
+                method: http_verbs.POST,
+                form: {
+                    formdata
+                },
+                headers: headers,
+                body: payload
+            });
+            break;
+    }
     return rp(options)
         .catch(err => {
             throw err; // bubble-up
@@ -119,13 +169,20 @@ function callViaDestination(url, destination, proxy, proxyAccessToken, contentTy
  * @param {string} options.destination_name - name of the destination to use
  * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD')} options.http_verb - HTTP method to use
  * @param {object} [options.payload] - payload for POST, PUT or PATCH
+ * @param {object} [options.form_data] - input-form like data, only relevant in conjunction with POST
  * @param {string} [options.content_type] - value for "Content-Type" http header, e.g. "application/json"
  * @returns {Promise<any | never>}
  */
 async function workOn(options) {
+    // safeguards
     if (!http_verbs.hasOwnProperty(options.http_verb)) {
-        throw Error(`unknown http method; allowed values: ${JSON.stringify(http_verbs)}`);
+        throw Error(`unknown http method: ${options.http_verb}; allowed values: ${JSON.stringify(http_verbs)}`);
     }
+    if (options.form_data && options.http_verb !== http_verbs.POST_FORM) {
+        throw Error(`please specify ${http_verbs.POST_FORM} for submitting form-like data!`)
+    }
+
+    // build up necessary variables
     const connectivityInstance = cfenv.getAppEnv().getService(options.connectivity_instance);
     const connectivityClientId = connectivityInstance.credentials.clientid;
     const connectivityClientSecret = connectivityInstance.credentials.clientsecret;
@@ -150,7 +207,15 @@ async function workOn(options) {
             return getAccessTokenForProxy(connectivityClientId, connectivityClientSecret, xsuaaUrl)
         })
         .then(accessTokenForProxy => {
-            return callViaDestination(options.url, queriedDestination, proxy, accessTokenForProxy, options.content_type || undefined, options.http_verb, options.payload || {});
+            return callViaDestination(
+                options.url,
+                queriedDestination,
+                proxy,
+                String(accessTokenForProxy),
+                options.content_type || undefined,
+                options.http_verb,
+                options.payload || {},
+                options.form_data || undefined);
         })
         .then(data => {
             return data;
