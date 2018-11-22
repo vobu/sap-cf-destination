@@ -13,6 +13,9 @@ module.exports = workOn;
  * @returns {Promise<any>}
  */
 async function getAccessTokenForDestinationInstance(clientId, clientSecret, baseUrl) {
+    if (cfenv.getAppEnv().isLocal) {
+        return Promise.resolve("mockLocalAccessToken");
+    } 
     return new Promise((resolve, reject) => {
         const oAuthClient = new OAuth2(clientId, clientSecret, `${baseUrl}/`, '/oauth/authorize', 'oauth/token', null);
         oAuthClient.getOAuthAccessToken('', {grant_type: 'client_credentials'},
@@ -35,6 +38,9 @@ async function getAccessTokenForDestinationInstance(clientId, clientSecret, base
  * @returns {Promise<any>}
  */
 async function getAccessTokenForProxy(clientId, clientSecret, baseUrl) {
+    if (cfenv.getAppEnv().isLocal) {
+        return Promise.resolve("mockLocalProxyToken");
+    }
     return new Promise((resolve, reject) => {
         const oAuthClient = new OAuth2(clientId, clientSecret, `${baseUrl}/`, '/oauth/authorize', 'oauth/token', null);
         oAuthClient.getOAuthAccessToken('', {grant_type: 'client_credentials'},
@@ -58,6 +64,14 @@ async function getAccessTokenForProxy(clientId, clientSecret, baseUrl) {
  * @returns {Promise<T | never>}
  */
 async function getDestination(destinationName, destinationApiUrl, accessToken) {
+    if (!cfenv.getAppEnv().isLocal) {
+        return Promise.resolve(
+            {
+                "destinationConfiguration": {
+                    "URL" : destinationName
+                }
+            });
+    }
     const options = {
         url: `${destinationApiUrl}/${destinationName}`,
         headers: {
@@ -85,22 +99,29 @@ async function getDestination(destinationName, destinationApiUrl, accessToken) {
  * @returns {Promise<T | never>}
  */
 function callViaDestination(url, destination, proxy, proxyAccessToken, contentType = 'application/json', http_method, payload, formdata) {
-    // standard header
-    const headers = {
-        'Proxy-Authorization': `Bearer ${proxyAccessToken}`
+    
+    let headers;
+    let options = {
+        url: `${destination.destinationConfiguration.URL}${url}`
     };
 
+    // enhance only if running in CF
+    if (!cfenv.getAppEnv().isLocal) {
+        // add auth for proxy
+        headers = {
+            'Proxy-Authorization': `Bearer ${proxyAccessToken}`
+        };
+        // add proxy
+        Object.assign(options ,{
+            proxy: proxy
+        });
+    }
+    
     // if configured in CF cockpit,
     // use auth data
     if (destination.authTokens && destination.authTokens[0]) {
         headers['Authorization'] = `${destination.authTokens[0].type} ${destination.authTokens[0].value}`;
     }
-
-    // standard options
-    let options = {
-        url: `${destination.destinationConfiguration.URL}${url}`,
-        proxy: proxy
-    };
 
     // enrich query option based on http verb
     switch (http_method) {
@@ -183,18 +204,43 @@ async function workOn(options) {
     }
 
     // build up necessary variables
-    const connectivityInstance = cfenv.getAppEnv().getService(options.connectivity_instance);
-    const connectivityClientId = connectivityInstance.credentials.clientid;
-    const connectivityClientSecret = connectivityInstance.credentials.clientsecret;
-    const proxy = `http://${connectivityInstance.credentials.onpremise_proxy_host}:${connectivityInstance.credentials.onpremise_proxy_port}`;
+    let connectivityInstance;
+    let connectivityClientId;
+    let connectivityClientSecret;
+    let proxy;
+    let xsuaaInstance;
+    let xsuaaUrl;
+    let destinationInstance;
+    let destinationApi;
+    let destinationClientId;
+    let destinationClientSecret;
 
-    const xsuaaInstance = cfenv.getAppEnv().getService(options.uaa_instance);
-    const xsuaaUrl = xsuaaInstance.credentials.url;
+    // differentiate between running in non-CF and CF environment
+    if (!cfenv.getAppEnv().isLocal) {
+        connectivityInstance = cfenv.getAppEnv().getService(options.connectivity_instance);
+        connectivityClientId = connectivityInstance.credentials.clientid;
+        connectivityClientSecret = connectivityInstance.credentials.clientsecret;
+        proxy = `http://${connectivityInstance.credentials.onpremise_proxy_host}:${connectivityInstance.credentials.onpremise_proxy_port}`;
 
-    const destinationInstance = cfenv.getAppEnv().getService(options.destination_instance);
-    const destinationApi = `${destinationInstance.credentials.uri}/destination-configuration/v1/destinations`;
-    const destinationClientId = destinationInstance.credentials.clientid;
-    const destinationClientSecret = destinationInstance.credentials.clientsecret;
+        xsuaaInstance = cfenv.getAppEnv().getService(options.uaa_instance);
+        xsuaaUrl = xsuaaInstance.credentials.url;
+
+        destinationInstance = cfenv.getAppEnv().getService(options.destination_instance);
+        destinationApi = `${destinationInstance.credentials.uri}/destination-configuration/v1/destinations`;
+        destinationClientId = destinationInstance.credentials.clientid;
+        destinationClientSecret = destinationInstance.credentials.clientsecret;
+    } else {
+        connectivityClientId = 'connectivityClientId';
+        connectivityClientSecret = 'connectivityClientSecret';
+        proxy = null;
+
+        xsuaaUrl = 'http://localhost';
+
+        destinationApi = `http://localhost/destination-configuration/v1/destinations`;
+        destinationClientId = 'destinationClientId';
+        destinationClientSecret = 'destinationClientSecret';
+    }
+
 
     let queriedDestination = {};
 
