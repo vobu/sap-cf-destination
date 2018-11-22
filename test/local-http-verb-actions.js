@@ -91,6 +91,26 @@ describe('callDestination in non-CF env', () => {
                 expect.fail(err);
             });
     });
+    
+    it('GET full response from valid endpoint', () => {
+        let parameters = {
+            url: '/builds/1',
+            connectivity_instance: 'a',
+            uaa_instance: 'b',
+            destination_instance: 'c',
+            destination_name: mockserverUrl,
+            http_verb: 'GET',
+            full_response: true
+        };
+        return callDestination(parameters)
+            .then(object => {
+                expect(object.statusCode).to.equal(200);
+                expect(object.headers).to.be.an('object');
+            })
+            .catch(err => {
+                expect.fail(err);
+            });
+    });
 
     it('POST to a valid endpoint', () => {
         let parameters = {

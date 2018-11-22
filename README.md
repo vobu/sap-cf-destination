@@ -25,6 +25,7 @@ npm install --save sap-cf-destination
 ~~~ javascript
 const callDestination = require('sap-cf-destination');
 
+// Promise chain
 callDestination({
         url: '/api/json',
         connectivity_instance: 'connectivity-lite',
@@ -43,6 +44,17 @@ callDestination({
         .catch(err => {
             // oh no 💩
         })
+        
+// async/await? 👏
+// add the 'async' keyword to an outer function wrapping 'callDestination'
+async function getIt() {
+    try {
+        const response = await callDestination({...});
+        // do sth clever w/ the response
+    } catch (err) {
+        // oh no 💩
+    }
+}
 ~~~
 
 ## Hints & Limitations
@@ -50,6 +62,13 @@ callDestination({
   **BUT**: if the proxy software decides to not let any of them pass through, the request originating from this module will of course fail
 - `POST`, `PUT` and `PATCH` only support a JSON payload.
   The payload itself can be a plain, deeply nested object; it will be stringified automatically
+- use `full_response: true` as a parameter to obtain the full response payload, e.g. to get access to response headers  
+  ~~~ javascript
+  callDestination({
+          //...
+          full_response: true
+      }).then(...).catch(...);
+  ~~~
 
 
 ## License
