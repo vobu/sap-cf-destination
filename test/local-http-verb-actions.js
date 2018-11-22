@@ -98,7 +98,7 @@ describe('callDestination in non-CF env', () => {
             });
     });
     
-    it('PATCH to a valid endpoint', () => {
+    it('PATCH a valid endpoint', () => {
         let parameters = {
             url: '/jobs/1',
             connectivity_instance: 'a',
@@ -113,6 +113,60 @@ describe('callDestination in non-CF env', () => {
         return callDestination(parameters)
             .then(validObject => {
                 expect(validObject.id).to.be.equal(1);
+            })
+            .catch(err => {
+                expect.fail(err);
+            });
+    });
+    
+    it('DELETE a valid endpoint', () => {
+        let parameters = {
+            url: '/builds/1',
+            connectivity_instance: 'a',
+            uaa_instance: 'b',
+            destination_instance: 'c',
+            destination_name: mockserverUrl,
+            http_verb: 'DELETE'
+        };
+        return callDestination(parameters)
+            .then(validObject => {
+                expect(validObject).to.exist;
+            })
+            .catch(err => {
+                expect.fail(err);
+            });
+    });
+
+    it('HEAD on a valid endpoint', () => {
+        let parameters = {
+            url: '/builds/1',
+            connectivity_instance: 'a',
+            uaa_instance: 'b',
+            destination_instance: 'c',
+            destination_name: mockserverUrl,
+            http_verb: 'HEAD'
+        };
+        return callDestination(parameters)
+            .then(data => {
+                expect(data).to.be.an('object');
+            })
+            .catch(err => {
+                expect.fail(err);
+            });
+    });
+    
+    it('OPTIONS of a valid endpoint', () => {
+        let parameters = {
+            url: '/builds/1',
+            connectivity_instance: 'a',
+            uaa_instance: 'b',
+            destination_instance: 'c',
+            destination_name: mockserverUrl,
+            http_verb: 'OPTIONS'
+        };
+        return callDestination(parameters)
+            .then(data => {
+                expect(data).to.be.empty;
             })
             .catch(err => {
                 expect.fail(err);

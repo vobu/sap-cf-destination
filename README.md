@@ -42,7 +42,8 @@ callDestination({
 ~~~
 
 ## Hints & Limitations
-- all major HTTP verbs are supported (`GET`, `POST`, `PUT`,`PATCH`,`HEAD`, `DELETE`)
+- all major HTTP verbs are supported (`GET`, `POST`, `PUT`,`PATCH`,`HEAD`, `DELETE`,`OPTIONS`) per se  
+  **BUT**: if the proxy software decides to not let any of them pass through, the request originating from this module will of course fail
 - `POST`, `PUT` and `PATCH` only support a JSON payload.
   The payload itself can be a plain, deeply nested object; it will be stringified automatically
 

@@ -142,6 +142,12 @@ function callViaDestination(parameters) {
                 })
             });
             break;
+        case http_verbs.OPTIONS:
+            Object.assign(options, {
+                method: http_verbs.OPTIONS,
+                headers: headers
+            });
+            break;
         case http_verbs.POST:
             Object.assign(options, {
                 method: http_verbs.POST,
