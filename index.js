@@ -64,7 +64,7 @@ async function getAccessTokenForProxy(clientId, clientSecret, baseUrl) {
  * @returns {Promise<T | never>}
  */
 async function getDestination(destinationName, destinationApiUrl, accessToken) {
-    if (!cfenv.getAppEnv().isLocal) {
+    if (cfenv.getAppEnv().isLocal) {
         return Promise.resolve(
             {
                 "destinationConfiguration": {
