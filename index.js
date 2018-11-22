@@ -96,14 +96,16 @@ async function getDestination(destinationName, destinationApiUrl, accessToken) {
  * @param {string} [parameters.contentType]
  * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD')} parameters.http_method
  * @param {object} [parameters.payload] - payload for POST, PUT or PATCH
+ * @param {boolean} [parameters.fullResponse] - pass entire reponse through from BE via proxy
  * @returns {Promise<T | never>}
  */
 function callViaDestination(parameters) {
-    let {url, destination, proxy, proxyAccessToken, contentType = 'application/json', http_method, payload} = parameters;
+    let {url, destination, proxy, proxyAccessToken, contentType = 'application/json', http_method, payload, fullResponse} = parameters;
 
     let headers = {};
     let options = {
-        url: `${destination.destinationConfiguration.URL}${url}`
+        url: `${destination.destinationConfiguration.URL}${url}`,
+        resolveWithFullResponse: fullResponse
     };
 
     // enhance only if running in CF
@@ -203,6 +205,8 @@ function callViaDestination(parameters) {
  * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD')} options.http_verb - HTTP method to use
  * @param {object} [options.payload] - payload for POST, PUT or PATCH
  * @param {string} [options.content_type] - value for "Content-Type" http header, e.g. "application/json"
+ * @param {boolean} [options.full_response] - whether to have the full response (including all headers etc)
+ *                                          pass through to the caller (BE -> proxy -> client)
  * @returns {Promise<any | never>}
  */
 async function workOn(options) {
@@ -269,7 +273,8 @@ async function workOn(options) {
                     proxyAccessToken: String(accessTokenForProxy),
                     contentType: options.content_type || undefined,
                     http_method: options.http_verb,
-                    payload: options.payload || undefined
+                    payload: options.payload || undefined,
+                    fullResponse: options.full_response || false
                 });
         })
         .then(data => {
