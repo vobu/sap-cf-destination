@@ -88,19 +88,21 @@ async function getDestination(destinationName, destinationApiUrl, accessToken) {
 /**
  * call a url in a destination via CF's included proxy
  *
- * @param {string} url - the absolute path (e.g. /my/api) to call in the destination
- * @param {object} destination - CF destination configuration object
- * @param {string} proxy - CF's integrated proxy as FQDN, e.g. http://10.0.1.23:20003
- * @param {string} proxyAccessToken - OAuth2.0 Bearer token ("client_credentials" grant type)
- * @param {string} [contentType]
- * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD')} http_method
- * @param {object} [payload] - payload for POST, PUT or PATCH
- * @param {object} [formdata] - input-form like data, only relevant in conjunction with POST
+ * @param {Map} parameters - various configuration options 
+ * @param {string} parameters.url - the absolute path (e.g. /my/api) to call in the destination
+ * @param {object} parameters.destination - CF destination configuration object
+ * @param {string} parameters.proxy - CF's integrated proxy as FQDN, e.g. http://10.0.1.23:20003
+ * @param {string} parameters.proxyAccessToken - OAuth2.0 Bearer token ("client_credentials" grant type)
+ * @param {string} [parameters.contentType]
+ * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD')} parameters.http_method
+ * @param {object} [parameters.payload] - payload for POST, PUT or PATCH
+ * @param {object} [parameters.formdata] - input-form like data, only relevant in conjunction with POST
  * @returns {Promise<T | never>}
  */
-function callViaDestination(url, destination, proxy, proxyAccessToken, contentType = 'application/json', http_method, payload, formdata) {
+function callViaDestination(parameters) {
+    let {url, destination, proxy, proxyAccessToken, contentType = 'application/json', http_method, payload, formdata} = parameters;
     
-    let headers;
+    let headers = {};
     let options = {
         url: `${destination.destinationConfiguration.URL}${url}`
     };
@@ -254,14 +256,16 @@ async function workOn(options) {
         })
         .then(accessTokenForProxy => {
             return callViaDestination(
-                options.url,
-                queriedDestination,
-                proxy,
-                String(accessTokenForProxy),
-                options.content_type || undefined,
-                options.http_verb,
-                options.payload || {},
-                options.form_data || undefined);
+                {
+                    url: options.url,
+                    destination: queriedDestination,
+                    proxy: proxy,
+                    proxyAccessToken: String(accessTokenForProxy),
+                    contentType: options.content_type || undefined,
+                    http_method: options.http_verb,
+                    payload: options.payload || {},
+                    formdata: options.form_data || undefined
+                });
         })
         .then(data => {
             return data;
