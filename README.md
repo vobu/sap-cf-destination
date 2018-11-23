@@ -59,6 +59,22 @@ async function getIt() {
 }
 ~~~
 
+## API
+## sap-cf-destination(options) ⇒ <code>Promise.&lt;(any\|never)&gt;</code>
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>Map</code> | configuration options for several CF service instances |
+| options.url | <code>string</code> | the url to call in the destination, absolute path (including leading slash)                              e.g. /api/v1/json |
+| options.connectivity_instance | <code>string</code> | name of the instance of the connectivity service |
+| options.uaa_instance | <code>string</code> | name of the instance of the uaa service |
+| options.destination_instance | <code>string</code> | name of the instance of the destination service |
+| options.destination_name | <code>string</code> | name of the destination to use |
+| options.http_verb | <code>&#x27;GET&#x27;</code> \| <code>&#x27;POST&#x27;</code> \| <code>&#x27;PUT&#x27;</code> \| <code>&#x27;PATCH&#x27;</code> \| <code>&#x27;DELETE&#x27;</code> \| <code>&#x27;HEAD&#x27;</code> | HTTP method to use |
+| [options.payload] | <code>object</code> | payload for POST, PUT or PATCH |
+| [options.content_type] | <code>string</code> | value for "Content-Type" http header, e.g. "application/json" |
+| [options.full_response] | <code>boolean</code> | whether to have the full response (including all headers etc)                                          pass through to the caller (BE -> proxy -> client) |
+
 ## Hints & Limitations
 - all major HTTP verbs are supported (`GET`, `POST`, `PUT`,`PATCH`,`HEAD`, `DELETE`,`OPTIONS`) per se  
   **BUT**: if the proxy software decides to not let any of them pass through, the request originating from this module will of course fail
