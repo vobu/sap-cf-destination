@@ -94,7 +94,7 @@ async function getDestination(destinationName, destinationApiUrl, accessToken) {
  * @param {string} parameters.proxy - CF's integrated proxy as FQDN, e.g. http://10.0.1.23:20003
  * @param {string} parameters.proxyAccessToken - OAuth2.0 Bearer token ("client_credentials" grant type)
  * @param {string} [parameters.contentType]
- * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD')} parameters.http_method
+ * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD'|'OPTIONS')} parameters.http_method
  * @param {object} [parameters.payload] - payload for POST, PUT or PATCH
  * @param {boolean} [parameters.fullResponse] - pass entire reponse through from BE via proxy
  * @returns {Promise<T | never>}

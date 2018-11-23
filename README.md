@@ -70,7 +70,7 @@ async function getIt() {
 | options.uaa_instance | <code>string</code> | name of the instance of the uaa service |
 | options.destination_instance | <code>string</code> | name of the instance of the destination service |
 | options.destination_name | <code>string</code> | name of the destination to use |
-| options.http_verb | <code>&#x27;GET&#x27;</code> \| <code>&#x27;POST&#x27;</code> \| <code>&#x27;PUT&#x27;</code> \| <code>&#x27;PATCH&#x27;</code> \| <code>&#x27;DELETE&#x27;</code> \| <code>&#x27;HEAD&#x27;</code> | HTTP method to use |
+| options.http_verb | <code>&#x27;GET&#x27;</code> \| <code>&#x27;POST&#x27;</code> \| <code>&#x27;PUT&#x27;</code> \| <code>&#x27;PATCH&#x27;</code> \| <code>&#x27;DELETE&#x27;</code> \| <code>&#x27;HEAD&#x27;</code> \| <code>&#x27;OPTIONS&#x27;</code> | HTTP method to use |
 | [options.payload] | <code>object</code> | payload for POST, PUT or PATCH |
 | [options.content_type] | <code>string</code> | value for "Content-Type" http header, e.g. "application/json" |
 | [options.full_response] | <code>boolean</code> | whether to have the full response (including all headers etc)                                          pass through to the caller (BE -> proxy -> client) |
