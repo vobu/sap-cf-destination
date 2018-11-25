@@ -97,15 +97,20 @@ async function getDestination(destinationName, destinationApiUrl, accessToken) {
  * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD'|'OPTIONS')} parameters.http_method
  * @param {object} [parameters.payload] - payload for POST, PUT or PATCH
  * @param {boolean} [parameters.fullResponse] - pass entire reponse through from BE via proxy
+ * @param {boolean} [parameters.techErrorOnly] - get a rejection only if the request failed for technical reasons
  * @returns {Promise<T | never>}
  */
 function callViaDestination(parameters) {
-    let {url, destination, proxy, proxyAccessToken, contentType = 'application/json', http_method, payload, fullResponse} = parameters;
+    let {url, destination, 
+        proxy, proxyAccessToken, 
+        contentType = 'application/json', http_method, payload, 
+        fullResponse, techErrorOnly} = parameters;
 
     let headers = {};
     let options = {
         url: `${destination.destinationConfiguration.URL}${url}`,
-        resolveWithFullResponse: fullResponse
+        resolveWithFullResponse: fullResponse,
+        simple: !techErrorOnly
     };
 
     // enhance only if running in CF
@@ -206,7 +211,9 @@ function callViaDestination(parameters) {
  * @param {object} [options.payload] - payload for POST, PUT or PATCH
  * @param {string} [options.content_type] - value for "Content-Type" http header, e.g. "application/json"
  * @param {boolean} [options.full_response] - whether to have the full response (including all headers etc)
- *                                          pass through to the caller (BE -> proxy -> client)
+ *                                          pass through to the caller (BE -> proxy -> client) 
+ * @param {boolean} [options.tech_error_only] - get a rejection only if the request failed for technical reasons,
+ *                                          so e.g. 404 is considered a valid response
  * @returns {Promise<any | never>}
  */
 async function workOn(options) {
@@ -274,7 +281,8 @@ async function workOn(options) {
                     contentType: options.content_type || undefined,
                     http_method: options.http_verb,
                     payload: options.payload || undefined,
-                    fullResponse: options.full_response || false
+                    fullResponse: options.full_response || false,
+                    techErrorOnly: options.tech_error_only || false
                 });
         })
         .then(data => {

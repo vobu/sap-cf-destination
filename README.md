@@ -73,7 +73,8 @@ async function getIt() {
 | options.http_verb | <code>&#x27;GET&#x27;</code> \| <code>&#x27;POST&#x27;</code> \| <code>&#x27;PUT&#x27;</code> \| <code>&#x27;PATCH&#x27;</code> \| <code>&#x27;DELETE&#x27;</code> \| <code>&#x27;HEAD&#x27;</code> \| <code>&#x27;OPTIONS&#x27;</code> | HTTP method to use |
 | [options.payload] | <code>object</code> | payload for POST, PUT or PATCH |
 | [options.content_type] | <code>string</code> | value for "Content-Type" http header, e.g. "application/json" |
-| [options.full_response] | <code>boolean</code> | whether to have the full response (including all headers etc)                                          pass through to the caller (BE -> proxy -> client) |
+| [options.full_response] | <code>boolean</code> | whether to have the full response (including all headers etc) pass through to the caller (BE -> proxy -> client) |
+| [options.tech_error_only] | <code>boolean</code> | get a rejection only if the request failed for technical reasons, so e.g. 404 is considered a valid response |
 
 ## Hints & Limitations
 - all major HTTP verbs are supported (`GET`, `POST`, `PUT`,`PATCH`,`HEAD`, `DELETE`,`OPTIONS`) per se  
@@ -86,6 +87,20 @@ async function getIt() {
           //...
           full_response: true
       }).then(...).catch(...);
+  ~~~
+- use `tech_error_only: true` as a parameter to only get a rejection if the request failed for technial reasons ("as long as [it has a status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/418), it's a valid response")  
+  ~~~ javascript
+  callDestination({
+          //...
+          tech_error_only: true
+      }).then( resonse => {
+          // even ☕️ ends up here
+          // add
+          //    full_response: true (see above)
+          // to get response.statusCode
+      }).catch( err => {
+          // network layer problem or such
+      });
   ~~~
 
 
