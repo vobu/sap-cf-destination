@@ -202,7 +202,7 @@ function callViaDestination(parameters) {
  * @param {string} options.uaa_instance - name of the instance of the uaa service
  * @param {string} options.destination_instance - name of the instance of the destination service
  * @param {string} options.destination_name - name of the destination to use
- * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD')} options.http_verb - HTTP method to use
+ * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD'|'OPTIONS')} options.http_verb - HTTP method to use
  * @param {object} [options.payload] - payload for POST, PUT or PATCH
  * @param {string} [options.content_type] - value for "Content-Type" http header, e.g. "application/json"
  * @param {boolean} [options.full_response] - whether to have the full response (including all headers etc)
