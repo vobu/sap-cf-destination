@@ -66,7 +66,7 @@ describe('callDestination in non-CF env, query options', () => {
         };
         return callDestination(parameters)
             .then(object => {
-                expect(object).to.be.an('object');
+                expect(JSON.parse(object)).to.be.an('object');
             })
             .catch(err => {
                 expect.fail(err);
