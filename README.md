@@ -75,6 +75,8 @@ async function getIt() {
 | [options.content_type] | <code>string</code> | value for "Content-Type" http header, e.g. "application/json" |
 | [options.full_response] | <code>boolean</code> | whether to have the full response (including all headers etc) pass through to the caller (BE -> proxy -> client) |
 | [options.tech_error_only] | <code>boolean</code> | get a rejection only if the request failed for technical reasons, so e.g. 404 is considered a valid response |
+| [options.binary] | <code>boolean</code> | whether to expect (and deliver) a binary at @param url |
+
 
 ## Hints & Limitations
 - all major HTTP verbs are supported (`GET`, `POST`, `PUT`,`PATCH`,`HEAD`, `DELETE`,`OPTIONS`) per se  
@@ -93,7 +95,7 @@ async function getIt() {
   callDestination({
           //...
           tech_error_only: true
-      }).then( resonse => {
+      }).then( response => {
           // even ☕️ ends up here
           // add
           //    full_response: true (see above)
@@ -102,6 +104,22 @@ async function getIt() {
           // network layer problem or such
       });
   ~~~
+- do a download of a binary file by specifying the matching `Content-Type` of the file and setting `binary` to `true`;   
+  this will deliver a `Buffer` useable in `writeStreams`
+  ~~~ javascript
+  callDestination({
+          //...
+          content_type: 'application/zip',
+          binary: true
+      }).then( buffer => {
+          // write Buffer
+          fs.createWriteStream('file.zip')
+            .write(buffer, 'binary')
+            .end();
+          // don't forget to listen to the error and finish event
+          // ...
+      }).catch(...);
+   ~~~
 
 
 ## License
