@@ -22,7 +22,7 @@
   "author": "Volker Buzek <volker.buzek@js-soft.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "cfenv": "^1.1.0",
+    "cfenv": "^1.2.2",
     "oauth": "^0.9.15",
     "request": "^2.88.0",
     "request-promise": "^4.2.2"
