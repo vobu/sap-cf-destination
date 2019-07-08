@@ -96,11 +96,14 @@ async function getDestination(destinationName, destinationApiUrl, accessToken) {
  * @param {string} [parameters.contentType]
  * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD')} parameters.http_method
  * @param {object} [parameters.payload] - payload for POST, PUT or PATCH
+ * @param {object} [parameters.formData] - play a browser a submit a form!
  * @param {boolean} [parameters.fullResponse] - pass entire reponse through from BE via proxy
  * @returns {Promise<T | never>}
  */
 function callViaDestination(parameters) {
-    let {url, destination, proxy, proxyAccessToken, contentType = 'application/json', http_method, payload, fullResponse} = parameters;
+    let {url, destination, proxy, proxyAccessToken,
+        contentType = 'application/json', http_method,
+        payload, formData, fullResponse} = parameters;
 
     let headers = {};
     let options = {
@@ -151,14 +154,23 @@ function callViaDestination(parameters) {
             });
             break;
         case http_verbs.POST:
-            Object.assign(options, {
-                method: http_verbs.POST,
-                headers: Object.assign(headers, {
-                    'Content-type': contentType
-                }),
-                body: payload,
-                json: true
-            });
+            // processing of "browser submitting form" behaviour
+            // and regular (JSON) post is different
+            if (parameters.formData) {
+                Object.assign(options, {
+                    method: http_verbs.POST,
+                    formData: formData
+                });
+            } else {
+                Object.assign(options, {
+                    method: http_verbs.POST,
+                    headers: Object.assign(headers, {
+                        'Content-type': contentType
+                    }),
+                    body: payload,
+                    json: true
+                });
+            }
             break;
         case http_verbs.PUT:
             Object.assign(options, {
@@ -204,6 +216,7 @@ function callViaDestination(parameters) {
  * @param {string} options.destination_name - name of the destination to use
  * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD')} options.http_verb - HTTP method to use
  * @param {object} [options.payload] - payload for POST, PUT or PATCH
+ * @param {object} [options.formData] - mimic a browser for POSTing a form to the destination; implies http verb POST
  * @param {string} [options.content_type] - value for "Content-Type" http header, e.g. "application/json"
  * @param {boolean} [options.full_response] - whether to have the full response (including all headers etc)
  *                                          pass through to the caller (BE -> proxy -> client)
@@ -274,6 +287,7 @@ async function workOn(options) {
                     contentType: options.content_type || undefined,
                     http_method: options.http_verb,
                     payload: options.payload || undefined,
+                    formData: options.formData || undefined,
                     fullResponse: options.full_response || false
                 });
         })
