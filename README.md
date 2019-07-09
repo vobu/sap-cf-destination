@@ -102,7 +102,7 @@ async function getIt() {
       }).then(...).catch(...);
   ~~~
 - use `tech_error_only: true` as a parameter to only get a rejection if the request failed for technial reasons ("as long as [it has a status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/418), it's a valid response")  
-  ~~~ javascript
+  ~~~js
   callDestination({
           //...
           tech_error_only: true
@@ -117,7 +117,7 @@ async function getIt() {
   ~~~
 - do a download of a binary file by specifying the matching `Content-Type` of the file and setting `binary` to `true`;   
   this will deliver a `Buffer` useable in `writeStreams`
-  ~~~ javascript
+  ~~~js
   callDestination({
           //...
           content_type: 'application/zip',
