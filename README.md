@@ -60,10 +60,21 @@ async function getIt() {
 ## Hints & Limitations
 - all major HTTP verbs are supported (`GET`, `POST`, `PUT`,`PATCH`,`HEAD`, `DELETE`,`OPTIONS`) per se  
   **BUT**: if the proxy software decides to not let any of them pass through, the request originating from this module will of course fail
-- `POST`, `PUT` and `PATCH` only support a JSON payload.
+- ~~`POST`,~~ `PUT` and `PATCH` only support a JSON payload.
   The payload itself can be a plain, deeply nested object; it will be stringified automatically
+- `POST` now supports both a JSON payload and a form-style ("like a browser") submission:
+  ~~~js
+  callDestination({
+    url: ...,
+    http_verb: 'POST',
+    formData: {
+      field1: "some value",
+      field2: JSON.stringify([ { "el1": "v1", "el2": "v2" } ])  // stringify deep nested objects and array structures
+    }
+  })
+  ~~~   
 - use `full_response: true` as a parameter to obtain the full response payload, e.g. to get access to response headers  
-  ~~~ javascript
+  ~~~js
   callDestination({
           //...
           full_response: true
