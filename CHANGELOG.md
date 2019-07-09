@@ -1,3 +1,27 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [0.1.0](https://github.com/vobu/sap-cf-destination/compare/v0.0.2-alpha.5...v0.1.0) (2019-07-09)
+
+
+### Bug Fixes
+
+* API docs ([c39b810](https://github.com/vobu/sap-cf-destination/commit/c39b810))
+* sec issues of pkg deps ([84af3ae](https://github.com/vobu/sap-cf-destination/commit/84af3ae))
+
+
+### Features
+
+* support form-style submissions ([7d97819](https://github.com/vobu/sap-cf-destination/commit/7d97819))
+
+
+### Tests
+
+* form-style submission ([79e1e84](https://github.com/vobu/sap-cf-destination/commit/79e1e84))
+
+
+
 ## [0.0.2-alpha.5](https://github.com/vobu/sap-cf-destination/compare/0.0.2-alpha.4...v0.0.2-alpha.5) (2018-11-26)
 
 
@@ -47,6 +71,3 @@
 
 
 ## 0.0.2-alpha.1 (2018-11-21)
-
-
-
