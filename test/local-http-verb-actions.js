@@ -72,7 +72,7 @@ describe('callDestination in non-CF env', () => {
                 expect.fail(err);
             });
     });
-    
+
     it('GET a valid endpoint', () => {
         let parameters = {
             url: '/builds/1',
@@ -91,7 +91,7 @@ describe('callDestination in non-CF env', () => {
                 expect.fail(err);
             });
     });
-    
+
     it('GET full response from valid endpoint', () => {
         let parameters = {
             url: '/builds/1',
@@ -132,7 +132,28 @@ describe('callDestination in non-CF env', () => {
                 expect.fail(err);
             });
     });
-    
+
+    it('POST form-like data to a valid endpoint', () => {
+        let parameters = {
+            url: '/builds',
+            connectivity_instance: 'a',
+            uaa_instance: 'b',
+            destination_instance: 'c',
+            destination_name: mockserverUrl,
+            http_verb: 'POST',
+            formData: {
+                me: "here"
+            }
+        };
+        return callDestination(parameters)
+            .then(validObject => {
+                expect(JSON.parse(validObject)).to.have.property('id');
+            })
+            .catch(err => {
+                expect.fail(err);
+            });
+    });
+
     it('PUT to a valid endpoint', () => {
         let parameters = {
             url: '/jobs/1',
@@ -153,7 +174,7 @@ describe('callDestination in non-CF env', () => {
                 expect.fail(err);
             });
     });
-    
+
     it('PATCH a valid endpoint', () => {
         let parameters = {
             url: '/jobs/1',
@@ -174,7 +195,7 @@ describe('callDestination in non-CF env', () => {
                 expect.fail(err);
             });
     });
-    
+
     it('DELETE a valid endpoint', () => {
         let parameters = {
             url: '/builds/1',
@@ -193,9 +214,9 @@ describe('callDestination in non-CF env', () => {
             });
     });
 
-    
-    
-    
+
+
+
     after(done => {
         // restore actual runtime env (if applicable)
         process.env.VCAP_APPLICATION = this.VCAP_APPLICATION;
