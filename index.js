@@ -170,6 +170,7 @@ function callViaDestination(parameters) {
             if (parameters.formData) {
                 Object.assign(options, {
                     method: http_verbs.POST,
+                    headers: headers,
                     formData: formData
                 });
             } else {
