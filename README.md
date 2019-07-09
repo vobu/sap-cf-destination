@@ -72,10 +72,12 @@ async function getIt() {
 | options.destination_name | <code>string</code> | name of the destination to use |
 | options.http_verb | <code>&#x27;GET&#x27;</code> \| <code>&#x27;POST&#x27;</code> \| <code>&#x27;PUT&#x27;</code> \| <code>&#x27;PATCH&#x27;</code> \| <code>&#x27;DELETE&#x27;</code> \| <code>&#x27;HEAD&#x27;</code> \| <code>&#x27;OPTIONS&#x27;</code> | HTTP method to use |
 | [options.payload] | <code>object</code> | payload for POST, PUT or PATCH |
+| [options.formData] | <code>object</code> | mimic a browser for POSTing a form to the destination; implies http verb POST |
 | [options.content_type] | <code>string</code> | value for "Content-Type" http header, e.g. "application/json" |
-| [options.full_response] | <code>boolean</code> | whether to have the full response (including all headers etc) pass through to the caller (BE -> proxy -> client) |
-| [options.tech_error_only] | <code>boolean</code> | get a rejection only if the request failed for technical reasons, so e.g. 404 is considered a valid response |
+| [options.full_response] | <code>boolean</code> | whether to have the full response (including all headers etc)                                          pass through to the caller (BE -> proxy -> client) |
+| [options.tech_error_only] | <code>boolean</code> | get a rejection only if the request failed for technical reasons,                                          so e.g. 404 is considered a valid response |
 | [options.binary] | <code>boolean</code> | whether to expect (and deliver) a binary at @param url |
+
 
 
 ## Hints & Limitations
