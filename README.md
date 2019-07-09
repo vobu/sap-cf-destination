@@ -1,4 +1,6 @@
-# SAP Cloud Foundry destination handler
+# SAP CP Cloud Foundry destination handler
+[![Build Status](https://travis-ci.com/vobu/sap-cf-destination.svg?branch=master)](https://travis-ci.com/vobu/sap-cf-destination) 
+[![npm Package](https://img.shields.io/npm/v/sap-cf-destination.svg)](https://www.npmjs.com/package/scp-cf-destination)
 
 ## Install
 ~~~
@@ -57,6 +59,25 @@ async function getIt() {
 }
 ~~~
 
+## API
+## sap-cf-destination(options) ⇒ <code>Promise.&lt;(any\|never)&gt;</code>
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>Map</code> | configuration options for several CF service instances |
+| options.url | <code>string</code> | the url to call in the destination, absolute path (including leading slash)                              e.g. /api/v1/json |
+| options.connectivity_instance | <code>string</code> | name of the instance of the connectivity service |
+| options.uaa_instance | <code>string</code> | name of the instance of the uaa service |
+| options.destination_instance | <code>string</code> | name of the instance of the destination service |
+| options.destination_name | <code>string</code> | name of the destination to use |
+| options.http_verb | <code>&#x27;GET&#x27;</code> \| <code>&#x27;POST&#x27;</code> \| <code>&#x27;PUT&#x27;</code> \| <code>&#x27;PATCH&#x27;</code> \| <code>&#x27;DELETE&#x27;</code> \| <code>&#x27;HEAD&#x27;</code> \| <code>&#x27;OPTIONS&#x27;</code> | HTTP method to use |
+| [options.payload] | <code>object</code> | payload for POST, PUT or PATCH |
+| [options.content_type] | <code>string</code> | value for "Content-Type" http header, e.g. "application/json" |
+| [options.full_response] | <code>boolean</code> | whether to have the full response (including all headers etc) pass through to the caller (BE -> proxy -> client) |
+| [options.tech_error_only] | <code>boolean</code> | get a rejection only if the request failed for technical reasons, so e.g. 404 is considered a valid response |
+| [options.binary] | <code>boolean</code> | whether to expect (and deliver) a binary at @param url |
+
+
 ## Hints & Limitations
 - all major HTTP verbs are supported (`GET`, `POST`, `PUT`,`PATCH`,`HEAD`, `DELETE`,`OPTIONS`) per se  
   **BUT**: if the proxy software decides to not let any of them pass through, the request originating from this module will of course fail
@@ -80,6 +101,36 @@ async function getIt() {
           full_response: true
       }).then(...).catch(...);
   ~~~
+- use `tech_error_only: true` as a parameter to only get a rejection if the request failed for technial reasons ("as long as [it has a status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/418), it's a valid response")  
+  ~~~ javascript
+  callDestination({
+          //...
+          tech_error_only: true
+      }).then( response => {
+          // even ☕️ ends up here
+          // add
+          //    full_response: true (see above)
+          // to get response.statusCode
+      }).catch( err => {
+          // network layer problem or such
+      });
+  ~~~
+- do a download of a binary file by specifying the matching `Content-Type` of the file and setting `binary` to `true`;   
+  this will deliver a `Buffer` useable in `writeStreams`
+  ~~~ javascript
+  callDestination({
+          //...
+          content_type: 'application/zip',
+          binary: true
+      }).then( buffer => {
+          // write Buffer
+          fs.createWriteStream('file.zip')
+            .write(buffer, 'binary')
+            .end();
+          // don't forget to listen to the error and finish event
+          // ...
+      }).catch(...);
+   ~~~
 
 
 ## License

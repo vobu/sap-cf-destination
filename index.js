@@ -94,22 +94,33 @@ async function getDestination(destinationName, destinationApiUrl, accessToken) {
  * @param {string} parameters.proxy - CF's integrated proxy as FQDN, e.g. http://10.0.1.23:20003
  * @param {string} parameters.proxyAccessToken - OAuth2.0 Bearer token ("client_credentials" grant type)
  * @param {string} [parameters.contentType]
- * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD')} parameters.http_method
+ * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD'|'OPTIONS')} parameters.http_method
  * @param {object} [parameters.payload] - payload for POST, PUT or PATCH
  * @param {object} [parameters.formData] - play a browser a submit a form!
  * @param {boolean} [parameters.fullResponse] - pass entire reponse through from BE via proxy
+ * @param {boolean} [parameters.techErrorOnly] - get a rejection only if the request failed for technical reasons
+ * @param {boolean} [parameters.binary] - whether to expect (and deliver) a binary at @param url
  * @returns {Promise<T | never>}
  */
 function callViaDestination(parameters) {
-    let {url, destination, proxy, proxyAccessToken,
-        contentType = 'application/json', http_method,
-        payload, formData, fullResponse} = parameters;
+    let {url, destination,
+        proxy, proxyAccessToken,
+        contentType = 'application/json', http_method, payload,
+        fullResponse, formData, techErrorOnly, binary} = parameters;
 
     let headers = {};
     let options = {
         url: `${destination.destinationConfiguration.URL}${url}`,
-        resolveWithFullResponse: fullResponse
+        resolveWithFullResponse: fullResponse,
+        simple: !techErrorOnly
     };
+
+    // this allows binary downloads
+    if (binary) {
+        Object.assign(options, {
+            encoding: null
+        });
+    }
 
     // enhance only if running in CF
     if (!cfenv.getAppEnv().isLocal) {
@@ -214,12 +225,15 @@ function callViaDestination(parameters) {
  * @param {string} options.uaa_instance - name of the instance of the uaa service
  * @param {string} options.destination_instance - name of the instance of the destination service
  * @param {string} options.destination_name - name of the destination to use
- * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD')} options.http_verb - HTTP method to use
+ * @param {('GET'|'POST'|'PUT'|'PATCH'|'DELETE'|'HEAD'|'OPTIONS')} options.http_verb - HTTP method to use
  * @param {object} [options.payload] - payload for POST, PUT or PATCH
  * @param {object} [options.formData] - mimic a browser for POSTing a form to the destination; implies http verb POST
  * @param {string} [options.content_type] - value for "Content-Type" http header, e.g. "application/json"
  * @param {boolean} [options.full_response] - whether to have the full response (including all headers etc)
  *                                          pass through to the caller (BE -> proxy -> client)
+ * @param {boolean} [options.tech_error_only] - get a rejection only if the request failed for technical reasons,
+ *                                          so e.g. 404 is considered a valid response
+ * @param {boolean} [options.binary] - whether to expect (and deliver) a binary at @param url
  * @returns {Promise<any | never>}
  */
 async function workOn(options) {
@@ -288,7 +302,9 @@ async function workOn(options) {
                     http_method: options.http_verb,
                     payload: options.payload || undefined,
                     formData: options.formData || undefined,
-                    fullResponse: options.full_response || false
+                    fullResponse: options.full_response || false,
+                    techErrorOnly: options.tech_error_only || false,
+                    binary: options.binary || false
                 });
         })
         .then(data => {
