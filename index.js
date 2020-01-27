@@ -106,7 +106,7 @@ function callViaDestination(parameters) {
     let {url, destination,
         proxy, proxyAccessToken,
         contentType = 'application/json', http_method, payload,
-        fullResponse, formData, techErrorOnly, binary,scc_name} = parameters;
+        fullResponse, formData, techErrorOnly, binary, scc_name} = parameters;
 
     let headers = {};
     let options = {
@@ -141,8 +141,9 @@ function callViaDestination(parameters) {
     }
     
     //Adding cloud connector name header if passed from request
-    if(`${scc_name}`!==undefined)
-	headers['SAP-Connectivity-SCC-Location_ID'] = `${scc_name}`;
+    if(`${scc_name}`!==undefined){
+	    headers['SAP-Connectivity-SCC-Location_ID'] = `${scc_name}`;
+    }
 
     // enrich query option based on http verb
     switch (http_method) {
