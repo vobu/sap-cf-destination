@@ -141,7 +141,7 @@ function callViaDestination(parameters) {
     }
     
     //Adding cloud connector name header if passed from request
-    if(`${scc_name}`!==undefined){
+    if(`${scc_name}`!=="undefined"){
 	    headers['SAP-Connectivity-SCC-Location_ID'] = `${scc_name}`;
     }
 
