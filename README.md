@@ -97,6 +97,13 @@ async function getIt() {
     }
   })
   ~~~   
+- use `scc_name: '<locID>'` as a parameter to specify location ID of the sap cloud connector . By default sap cloud connector with blank location id is used .  
+  ~~~js
+  callDestination({
+          //...
+          scc_name: '<locID of SCC>'
+      }).then(...).catch(...);
+  ~~~
 - use `full_response: true` as a parameter to obtain the full response payload, e.g. to get access to response headers  
   ~~~js
   callDestination({
