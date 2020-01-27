@@ -1,6 +1,6 @@
 {
   "name": "sap-cf-destination",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "convenience utility for calling a URL via a SAP CF destination",
   "main": "index.js",
   "scripts": {

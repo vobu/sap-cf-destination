@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.0](https://github.com/vobu/sap-cf-destination/compare/v0.1.1...v0.2.0) (2020-01-27)
+
+
+### Features
+
+* **cc:** use (optional) SAP cloud connector id in a call ([f8c2142](https://github.com/vobu/sap-cf-destination/commit/f8c2142bfb9229b1125743ba8793a9cf8a86073e))
+
 ### [0.1.1](https://github.com/vobu/sap-cf-destination/compare/v0.1.0...v0.1.1) (2019-07-09)
 
 
