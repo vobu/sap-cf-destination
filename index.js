@@ -106,7 +106,7 @@ function callViaDestination(parameters) {
     let {url, destination,
         proxy, proxyAccessToken,
         contentType = 'application/json', http_method, payload,
-        fullResponse, formData, techErrorOnly, binary} = parameters;
+        fullResponse, formData, techErrorOnly, binary, scc_name} = parameters;
 
     let headers = {};
     let options = {
@@ -138,6 +138,11 @@ function callViaDestination(parameters) {
     // use auth data
     if (destination.authTokens && destination.authTokens[0]) {
         headers['Authorization'] = `${destination.authTokens[0].type} ${destination.authTokens[0].value}`;
+    }
+    
+    //Adding cloud connector name header if passed from request
+    if(`${scc_name}`!==undefined){
+	    headers['SAP-Connectivity-SCC-Location_ID'] = `${scc_name}`;
     }
 
     // enrich query option based on http verb
@@ -305,7 +310,8 @@ async function workOn(options) {
                     formData: options.formData || undefined,
                     fullResponse: options.full_response || false,
                     techErrorOnly: options.tech_error_only || false,
-                    binary: options.binary || false
+                    binary: options.binary || false,
+                    scc_name: options.scc_name || undefined
                 });
         })
         .then(data => {
