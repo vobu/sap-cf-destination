@@ -77,7 +77,7 @@ async function getIt() {
 | [options.full_response] | <code>boolean</code> | whether to have the full response (including all headers etc)                                          pass through to the caller (BE -> proxy -> client) |
 | [options.tech_error_only] | <code>boolean</code> | get a rejection only if the request failed for technical reasons,                                          so e.g. 404 is considered a valid response |
 | [options.binary] | <code>boolean</code> | whether to expect (and deliver) a binary at @param url |
-| [options.scc_name] | <code>string</code> | Location ID of the sap cloud connector .  |
+| [options.scc_name] | <code>string</code> | Location ID of the SAP Cloud Connector |
 
 
 
@@ -97,7 +97,7 @@ async function getIt() {
     }
   })
   ~~~   
-- use `scc_name: '<locID>'` as a parameter to specify location ID of the sap cloud connector . By default sap cloud connector with blank location id is used .  
+- use `scc_name: '<locID>'` as a parameter to specify location ID of the SAP Cloud Connector (default: _none_)  
   ~~~js
   callDestination({
           //...

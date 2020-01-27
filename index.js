@@ -100,6 +100,7 @@ async function getDestination(destinationName, destinationApiUrl, accessToken) {
  * @param {boolean} [parameters.fullResponse] - pass entire reponse through from BE via proxy
  * @param {boolean} [parameters.techErrorOnly] - get a rejection only if the request failed for technical reasons
  * @param {boolean} [parameters.binary] - whether to expect (and deliver) a binary at @param url
+ * @param {string} [parameters.scc_name] - location ID of SAP Cloud Connector
  * @returns {Promise<T | never>}
  */
 function callViaDestination(parameters) {
@@ -241,6 +242,7 @@ function callViaDestination(parameters) {
  * @param {boolean} [options.tech_error_only] - get a rejection only if the request failed for technical reasons,
  *                                          so e.g. 404 is considered a valid response
  * @param {boolean} [options.binary] - whether to expect (and deliver) a binary at @param url
+ * @param {string} [options.scc_name] - location ID of the SAP Cloud Connector
  * @returns {Promise<any | never>}
  */
 async function workOn(options) {
