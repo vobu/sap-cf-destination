@@ -141,9 +141,8 @@ function callViaDestination(parameters) {
         headers['Authorization'] = `${destination.authTokens[0].type} ${destination.authTokens[0].value}`;
     }
     
-    //Adding cloud connector name header if passed from request
-
-    if(`${scc_name}`!=="undefined"){
+    // adding cloud connector name header if passed from request
+    if (scc_name) {
 	    headers['SAP-Connectivity-SCC-Location_ID'] = `${scc_name}`;
     }
 
