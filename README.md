@@ -1,6 +1,6 @@
 # SAP CP Cloud Foundry destination handler
 [![Build Status](https://travis-ci.com/vobu/sap-cf-destination.svg?branch=master)](https://travis-ci.com/vobu/sap-cf-destination) 
-[![npm Package](https://img.shields.io/npm/v/sap-cf-destination.svg)](https://www.npmjs.com/package/scp-cf-destination)
+[![npm Package](https://img.shields.io/npm/v/sap-cf-destination.svg)](https://www.npmjs.com/package/sap-cf-destination)
 
 ## Install
 ~~~
