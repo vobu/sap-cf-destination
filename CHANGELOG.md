@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/vobu/sap-cf-destination/compare/v0.2.0...v0.3.0) (2020-01-27)
+
+
+### Bug Fixes
+
+* **docs:** typo in badge url ([f81dc93](https://github.com/vobu/sap-cf-destination/commit/f81dc93e76b47aa648c7064f7904523d9ff5b304))
+* **gh-actions:** add install step (doh!) ([1aa1c45](https://github.com/vobu/sap-cf-destination/commit/1aa1c45f6e7aa4de608e9602cab464d77dc7748e))
+* use "undefined" instead of undefined else its passing header as undefined  ([ce22fef](https://github.com/vobu/sap-cf-destination/commit/ce22fef7f7c08e9057f1d93b787be9b15af4e5f7))
+
 ## [0.2.0](https://github.com/vobu/sap-cf-destination/compare/v0.1.1...v0.2.0) (2020-01-27)
 
 
