@@ -22,16 +22,16 @@
   "author": "Volker Buzek <volker.buzek@js-soft.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "cfenv": "^1.2.2",
+    "cfenv": "^1.2.3",
     "oauth": "^0.9.15",
     "request": "^2.88.0",
     "request-promise": "^4.2.5"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
+    "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
-    "json-server": "^0.15.1",
-    "mocha": "^7.0.1",
-    "rewire": "^4.0.1"
+    "json-server": "^0.16.3",
+    "mocha": "^8.3.2",
+    "rewire": "^5.0.0"
   }
 }
